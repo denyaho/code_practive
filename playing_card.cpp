@@ -70,22 +70,45 @@ class Dealer{
     private:
         struct Table{
             vector<vector<Card>> players;
+            string gameMode;
             Deck deck;
         };
+
+        static Table table;
     public:
-        static vector<vector<Card>> startGame(int amountOfPlayers){
-            Table table;
+        static vector<vector<Card>> startGame(int amountOfPlayers,string gameMode){
+            table.gameMode=gameMode;
             table.deck.shuffleDeck();
             for(int i=0;i<amountOfPlayers;++i){
                 vector<Card> playerCard;
-                for(int j=0;j<2;++j){
+                for(int j=0;j<initialCards(gameMode);++j){
                     playerCard.push_back(table.deck.draw());
                     }
                 table.players.push_back(playerCard);
             }
             return table.players;
         }
+        static int initialCards(string gameMode){
+            if(gameMode=="poker"){
+                return 5;
+            }
+            if(gameMode=="21"){
+                return 2;
+            }
+            return 0;
+        }
+        static void printTableInformation(){
+            cout << "Amount of players:" << to_string(table.players.size()) << "... Game mode: " << table.gameMode + ". At this table:" << endl;
+            for(int i=0;i<table.players.size();++i){
+                cout << i+1 << "player's cards: " << endl;
+                for(int j=0;j<table.players[i].size();++j){
+                    cout << table.players[i][j].getCardString() << endl;
+                }
+            }
+        }
 };
+
+Dealer::Table Dealer::table;
 
 int main(){
     Deck card1;
@@ -99,9 +122,10 @@ int main(){
 
     cout << "Card of a person" << endl;
 
-    vector<vector<Card>> table =Dealer::startGame(2);
-    for(int i=0;i<2;++i){
-        cout << table[0][i].getCardString() << endl;
+    vector<vector<Card>> table1 =Dealer::startGame(2,"poker");
+    for(int i=0;i<Dealer::initialCards("poker");++i){
+        cout << table1[0][i].getCardString() << endl;
     }
+    Dealer::printTableInformation();
     
 }
